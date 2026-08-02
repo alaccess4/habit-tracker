@@ -1,0 +1,940 @@
+/* ==========================================================================
+   Components
+   Reusable UI component classes. Depends on tokens.css + base.css.
+   Naming: flat, hyphenated class names; BEM-style __element / is-state
+   modifiers where a component has clear sub-parts.
+   ========================================================================== */
+
+/* -------------------------------------------------------------------- */
+/* .card — base glassy surface                                          */
+/* -------------------------------------------------------------------- */
+
+.card {
+  position: relative;
+  background: var(--color-surface);
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  backdrop-filter: blur(var(--blur-glass));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card), var(--shadow-inset-hairline);
+  padding: var(--space-5);
+}
+
+.card--tight {
+  padding: var(--space-4);
+}
+
+.card--interactive {
+  transition: transform var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out);
+}
+
+.card--interactive:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-card-hover), var(--shadow-inset-hairline);
+}
+
+.card--interactive:active {
+  transform: scale(0.98);
+}
+
+/* -------------------------------------------------------------------- */
+/* .stat-card — icon + big number + label + optional progress bar       */
+/* -------------------------------------------------------------------- */
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: var(--color-surface);
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  backdrop-filter: blur(var(--blur-glass));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  min-height: 128px;
+}
+
+.stat-card__icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-strong);
+  color: var(--color-accent-solid);
+  flex-shrink: 0;
+}
+
+.stat-card__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.stat-card__value {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.stat-card__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.stat-card__bar-track {
+  margin-top: auto;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-strong);
+  overflow: hidden;
+}
+
+.stat-card__bar-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-gradient);
+  width: calc(var(--progress, 0) * 100%);
+  transition: width var(--duration-slow) var(--ease-out);
+}
+
+/* 2-column grid on mobile; consumer wraps stat cards in .stat-grid */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+/* -------------------------------------------------------------------- */
+/* .progress-ring — SVG circular progress                               */
+/* -------------------------------------------------------------------- */
+
+.progress-ring {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 160px;
+}
+
+.progress-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-ring__track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 10;
+}
+
+.progress-ring__fill {
+  fill: none;
+  stroke: url(#progress-ring-gradient);
+  stroke-width: 10;
+  stroke-linecap: round;
+  /* Consumer sets --progress (0-1) and --ring-circumference (2 * PI * r) */
+  stroke-dasharray: var(--ring-circumference, 439.8);
+  stroke-dashoffset: calc(var(--ring-circumference, 439.8) * (1 - var(--progress, 0)));
+  transition: stroke-dashoffset var(--duration-slow) var(--ease-out);
+}
+
+.progress-ring__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  text-align: center;
+  pointer-events: none;
+}
+
+.progress-ring__number {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.progress-ring__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* -------------------------------------------------------------------- */
+/* .hero-card — big gradient streak / today-summary card                */
+/* -------------------------------------------------------------------- */
+
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  background: var(--color-accent-gradient);
+  color: var(--color-text-on-accent);
+  box-shadow: var(--shadow-card), var(--shadow-accent-glow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.hero-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 85% -10%, rgba(255, 255, 255, 0.35), transparent 60%);
+  pointer-events: none;
+}
+
+.hero-card__eyebrow {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.hero-card__title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.hero-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-card__stat-value {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  line-height: 1;
+}
+
+.hero-card__stat-label {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: var(--space-1);
+}
+
+/* -------------------------------------------------------------------- */
+/* .habit-card — icon, name, progress/checkbox, deadline chip           */
+/* -------------------------------------------------------------------- */
+
+.habit-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--color-surface);
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  backdrop-filter: blur(var(--blur-glass));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+}
+
+.habit-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-strong);
+  color: var(--color-accent-solid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.habit-card__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.habit-card__body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.habit-card__name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.habit-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.habit-card__bar-track {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-strong);
+  overflow: hidden;
+  margin-top: var(--space-1);
+}
+
+.habit-card__bar-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-gradient);
+  width: calc(var(--progress, 0) * 100%);
+  transition: width var(--duration-slow) var(--ease-out);
+}
+
+/* Checkbox-style toggle variant */
+.habit-card__toggle {
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  border-radius: var(--radius-round);
+  border: 2px solid var(--color-border-strong);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.habit-card__toggle svg {
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.habit-card__toggle:active {
+  transform: scale(0.92);
+}
+
+.habit-card__toggle.is-checked {
+  background: var(--color-accent-gradient);
+  border-color: transparent;
+}
+
+.habit-card__toggle.is-checked svg {
+  opacity: 1;
+  transform: scale(1);
+  color: var(--color-text-on-accent);
+}
+
+/* -------------------------------------------------------------------- */
+/* .chip — small pill label (deadline / schedule days)                  */
+/* -------------------------------------------------------------------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-strong);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.chip--success {
+  color: var(--color-success);
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.chip--warning {
+  color: var(--color-warning);
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.chip--danger {
+  color: var(--color-danger);
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* -------------------------------------------------------------------- */
+/* .button — primary (gradient) / secondary (outlined glass)            */
+/* -------------------------------------------------------------------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-button);
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  border: 1px solid transparent;
+  transition: transform var(--duration-fast) var(--ease-out),
+              opacity var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out);
+}
+
+.button:active {
+  transform: scale(0.97);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  transform: none;
+  pointer-events: none;
+}
+
+.button--primary {
+  background: var(--color-accent-gradient);
+  color: var(--color-text-on-accent);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
+}
+
+.button--primary:hover {
+  box-shadow: 0 6px 22px rgba(139, 92, 246, 0.5);
+}
+
+.button--secondary {
+  background: var(--color-surface);
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  backdrop-filter: blur(var(--blur-glass));
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
+}
+
+.button--secondary:hover {
+  background: var(--color-surface-strong);
+}
+
+.button--full {
+  width: 100%;
+}
+
+.button--icon {
+  padding: var(--space-3);
+  border-radius: var(--radius-round);
+}
+
+/* -------------------------------------------------------------------- */
+/* .modal / .sheet — bottom-sheet modal with scrim                      */
+/* -------------------------------------------------------------------- */
+
+.modal-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-scrim);
+  opacity: 0;
+  animation: modal-scrim-in var(--duration-base) var(--ease-out) forwards;
+}
+
+@keyframes modal-scrim-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  width: 100%;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+  border-top-left-radius: var(--radius-card);
+  border-top-right-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-3) var(--space-5) calc(var(--space-5) + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  animation: sheet-in var(--duration-slow) var(--ease-out) forwards;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+@keyframes sheet-in {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sheet__handle {
+  width: 40px;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border-strong);
+  margin: var(--space-2) auto var(--space-4);
+}
+
+.sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.sheet__close {
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  border-radius: var(--radius-round);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-strong);
+  color: var(--color-text-secondary);
+}
+
+/* Centered modal variant (non-sheet), for desktop or dialogs */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+
+.modal__panel {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5);
+  opacity: 0;
+  transform: scale(0.96);
+  animation: modal-panel-in var(--duration-base) var(--ease-out) forwards;
+}
+
+@keyframes modal-panel-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* -------------------------------------------------------------------- */
+/* .toast — top-anchored achievement notification                       */
+/* -------------------------------------------------------------------- */
+
+.toast {
+  position: fixed;
+  top: calc(var(--space-4) + env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%) translateY(-16px);
+  z-index: var(--z-toast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: calc(100vw - var(--space-6));
+  width: max-content;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-button);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: var(--shadow-toast);
+  opacity: 0;
+  animation: toast-in var(--duration-base) var(--ease-out) forwards;
+}
+
+.toast.is-leaving {
+  animation: toast-out var(--duration-base) var(--ease-in) forwards;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-16px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to { opacity: 0; transform: translateX(-50%) translateY(-16px); }
+}
+
+.toast__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-round);
+  background: var(--color-accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-text-on-accent);
+}
+
+.toast__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.toast__body {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* -------------------------------------------------------------------- */
+/* .bottom-nav — fixed glassy tab bar                                   */
+/* -------------------------------------------------------------------- */
+
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-bottom-nav);
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: rgba(11, 11, 20, 0.75);
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  backdrop-filter: blur(var(--blur-glass));
+  border-top: 1px solid var(--color-border);
+  max-width: 100vw;
+}
+
+.bottom-nav__item {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  color: var(--color-text-secondary);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.bottom-nav__item svg {
+  width: 22px;
+  height: 22px;
+}
+
+.bottom-nav__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.bottom-nav__item.is-active {
+  color: var(--color-accent-solid);
+}
+
+.bottom-nav__item.is-active .bottom-nav__label,
+.bottom-nav__item.is-active .bottom-nav__icon-label {
+  background: var(--color-accent-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.bottom-nav__item:active {
+  transform: scale(0.95);
+}
+
+/* -------------------------------------------------------------------- */
+/* .badge / .badge-grid — reward badges, locked vs unlocked              */
+/* -------------------------------------------------------------------- */
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+  padding: var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.badge__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-round);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-strong);
+  position: relative;
+}
+
+.badge__icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.badge__name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.badge__desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* Locked: desaturated + dimmed, lock icon slot visible */
+.badge.is-locked .badge__icon {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.badge.is-locked .badge__name,
+.badge.is-locked .badge__desc {
+  opacity: 0.5;
+}
+
+.badge__lock {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-round);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+}
+
+.badge.is-locked .badge__lock {
+  display: flex;
+}
+
+/* Unlocked: full color + accent glow */
+.badge.is-unlocked .badge__icon {
+  background: var(--color-accent-gradient);
+  box-shadow: var(--shadow-accent-glow);
+  color: var(--color-text-on-accent);
+}
+
+/* -------------------------------------------------------------------- */
+/* .calendar-grid — 7-column month grid                                 */
+/* -------------------------------------------------------------------- */
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-2);
+}
+
+.calendar-grid__weekday {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  padding-bottom: var(--space-1);
+}
+
+.calendar-day {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.calendar-day__glyph {
+  width: 10px;
+  height: 10px;
+  display: block;
+}
+
+/* Full: success — completed all habits, checkmark glyph */
+.calendar-day.is-full {
+  background: rgba(34, 197, 94, 0.16);
+  border-color: rgba(34, 197, 94, 0.45);
+  color: var(--color-success);
+}
+
+/* Partial: warning — some habits completed, half-dot glyph */
+.calendar-day.is-partial {
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: var(--color-warning);
+}
+
+/* Missed: danger, dimmed, x glyph */
+.calendar-day.is-missed {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.28);
+  color: var(--color-danger);
+  opacity: 0.75;
+}
+
+/* Future / empty: neutral, low emphasis */
+.calendar-day.is-future,
+.calendar-day.is-empty {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
+.calendar-day.is-today {
+  border-color: var(--color-accent-solid);
+  box-shadow: 0 0 0 1px var(--color-accent-solid);
+}
+
+/* -------------------------------------------------------------------- */
+/* .avatar-stage — mascot illustration container                        */
+/* -------------------------------------------------------------------- */
+
+.avatar-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  animation: avatar-stage-in var(--duration-slow) var(--ease-out) forwards;
+}
+
+.avatar-stage svg,
+.avatar-stage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes avatar-stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* -------------------------------------------------------------------- */
+/* .weekly-chart — CSS-only bar chart with metric tab-switcher           */
+/* -------------------------------------------------------------------- */
+
+.weekly-chart__tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  overflow-x: auto;
+}
+
+.weekly-chart__tab {
+  flex-shrink: 0;
+  min-height: var(--touch-target-min);
+  padding: 0 var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+.weekly-chart__tab.is-active {
+  background: var(--color-accent-gradient);
+  color: var(--color-text-on-accent);
+  border-color: transparent;
+}
+
+.weekly-chart__bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: 160px;
+  padding-top: var(--space-4);
+}
+
+.weekly-chart__bar-col {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: var(--space-2);
+}
+
+.weekly-chart__bar {
+  width: 100%;
+  max-width: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-strong);
+  /* Consumer sets --value between 0 and 1 per bar */
+  height: calc(var(--value, 0) * 100%);
+  min-height: 4px;
+  transition: height var(--duration-slow) var(--ease-out);
+}
+
+.weekly-chart__bar-col.is-today .weekly-chart__bar {
+  background: var(--color-accent-gradient);
+}
+
+.weekly-chart__bar-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.weekly-chart__bar-col.is-today .weekly-chart__bar-label {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}

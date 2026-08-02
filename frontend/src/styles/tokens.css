@@ -1,0 +1,162 @@
+/* ==========================================================================
+   Design Tokens
+   Habit Tracker PWA — dark "cinematic" fitness-app theme
+   Assumes "Sora" (headings) and "Inter" (body) are loaded via a <link> tag
+   in the HTML <head>, e.g.:
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+   A local @import fallback is provided below in case no <link> is present —
+   remove it if you prefer to control font loading entirely from HTML.
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap");
+
+:root {
+  /* -------------------------------------------------------------------- */
+  /* Color — raw palette                                                  */
+  /* -------------------------------------------------------------------- */
+  --palette-bg: #0B0B14;
+  --palette-surface: rgba(255, 255, 255, 0.06);
+  --palette-surface-strong: rgba(255, 255, 255, 0.10);
+  --palette-border: rgba(255, 255, 255, 0.08);
+  --palette-border-strong: rgba(255, 255, 255, 0.14);
+
+  --palette-purple: #8B5CF6;
+  --palette-pink: #EC4899;
+  --palette-orange: #F97316;
+
+  --palette-white: #F5F5F7;
+  --palette-gray-300: #B4B4C0;
+  --palette-gray-500: #7A7A88;
+  --palette-gray-700: #45454F;
+
+  --palette-green: #22C55E;
+  --palette-amber: #F59E0B;
+  --palette-red: #EF4444;
+
+  /* -------------------------------------------------------------------- */
+  /* Color — semantic tokens                                              */
+  /* -------------------------------------------------------------------- */
+  --color-bg: var(--palette-bg);
+  --color-bg-elevated: #121220;
+  --color-surface: var(--palette-surface);
+  --color-surface-strong: var(--palette-surface-strong);
+  --color-border: var(--palette-border);
+  --color-border-strong: var(--palette-border-strong);
+
+  --color-accent-start: var(--palette-purple);
+  --color-accent-end: var(--palette-pink);
+  --color-accent-gradient: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+  --color-accent-solid: var(--palette-purple);
+  --color-streak: var(--palette-orange);
+
+  --color-text-primary: var(--palette-white);
+  --color-text-secondary: var(--palette-gray-300);
+  --color-text-muted: var(--palette-gray-500);
+  --color-text-on-accent: #FFFFFF;
+
+  --color-success: var(--palette-green);
+  --color-warning: var(--palette-amber);
+  --color-danger: var(--palette-red);
+
+  --color-focus-ring: var(--palette-purple);
+
+  /* -------------------------------------------------------------------- */
+  /* Typography                                                           */
+  /* -------------------------------------------------------------------- */
+  --font-heading: "Sora", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --font-size-base: 16px;
+  --font-size-xs: 0.75rem;   /* 12px */
+  --font-size-sm: 0.875rem;  /* 14px */
+  --font-size-md: 1rem;      /* 16px */
+  --font-size-lg: 1.125rem;  /* 18px */
+  --font-size-xl: 1.5rem;    /* 24px */
+  --font-size-2xl: 2rem;     /* 32px */
+
+  --line-height-body: 1.5;
+  --line-height-heading: 1.2;
+  --line-height-tight: 1.1;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* -------------------------------------------------------------------- */
+  /* Spacing (4/8/12/16/24/32/48)                                         */
+  /* -------------------------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* -------------------------------------------------------------------- */
+  /* Radius                                                                */
+  /* -------------------------------------------------------------------- */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-card: 22px;
+  --radius-button: 14px;
+  --radius-pill: 999px;
+  --radius-round: 50%;
+
+  /* -------------------------------------------------------------------- */
+  /* Elevation / shadow                                                   */
+  /* -------------------------------------------------------------------- */
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.45);
+  --shadow-accent-glow: 0 0 24px rgba(139, 92, 246, 0.45);
+  --shadow-streak-glow: 0 0 24px rgba(249, 115, 22, 0.4);
+  --shadow-inset-hairline: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-toast: 0 6px 24px rgba(0, 0, 0, 0.5);
+
+  --blur-glass: 20px;
+
+  /* -------------------------------------------------------------------- */
+  /* Z-index scale                                                        */
+  /* -------------------------------------------------------------------- */
+  --z-base: 0;
+  --z-card: 1;
+  --z-sticky-header: 10;
+  --z-bottom-nav: 20;
+  --z-scrim: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+
+  /* -------------------------------------------------------------------- */
+  /* Motion                                                                */
+  /* -------------------------------------------------------------------- */
+  --duration-fast: 150ms;
+  --duration-base: 220ms;
+  --duration-slow: 300ms;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* -------------------------------------------------------------------- */
+  /* Layout                                                                */
+  /* -------------------------------------------------------------------- */
+  --breakpoint-desktop: 768px;
+  --content-max-width: 480px;
+  --desktop-max-width: 1120px;
+  --bottom-nav-height: 68px;
+  --touch-target-min: 44px;
+}
+
+/* Respect reduced-motion preference at the token level: collapse durations
+   so any component using these variables automatically becomes near-instant. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+  }
+}

@@ -1,0 +1,45 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Habit tracker app icon: flame inside a streak progress ring">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+    <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5F5F7" />
+      <stop offset="100%" stop-color="#F5F5F7" stop-opacity="0.85" />
+    </linearGradient>
+    <linearGradient id="flame-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A" />
+      <stop offset="45%" stop-color="#F97316" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+  </defs>
+
+  <!-- square base, rounded like an app-icon canvas -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="#0B0B14" />
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg-gradient)" opacity="0.92" />
+
+  <!-- streak progress ring (~78% complete, open at top-right to suggest motion/progress) -->
+  <circle
+    cx="256" cy="256" r="168"
+    fill="none"
+    stroke="url(#ring-gradient)"
+    stroke-width="26"
+    stroke-linecap="round"
+    stroke-dasharray="820 1055.6"
+    stroke-dashoffset="0"
+    transform="rotate(-90 256 256)"
+    opacity="0.9"
+  />
+
+  <!-- flame motif, centered -->
+  <path
+    fill="url(#flame-gradient)"
+    d="M256 130c26 42 66 74 66 122 0 46-34 82-80 82s-78-34-78-78c0-18 6-32 14-46 4 20 16 32 28 32 14 0 22-12 20-28-4-30-10-52 2-84 8 20 20 34 28 0Z"
+  />
+  <path
+    fill="#0B0B14"
+    opacity="0.35"
+    d="M256 214c10 18 26 34 26 54 0 20-14 36-34 36s-34-16-34-34c0-8 2-14 6-20 2 8 8 14 14 14s10-6 10-14c-2-14-4-24 2-36 4 10 8 14 10 0Z"
+  />
+</svg>

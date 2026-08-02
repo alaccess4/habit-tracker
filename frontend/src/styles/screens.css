@@ -1,0 +1,253 @@
+/* ==========================================================================
+   Screens / Layout
+   Page-level shell and per-screen layout rules. Depends on tokens.css,
+   base.css and components.css.
+
+   Layout strategy:
+   - Mobile (<768px): single-column "phone" layout, full-bleed, content
+     capped at --content-max-width and centered, fixed bottom nav.
+   - Desktop (>=768px): the app is deliberately kept phone-shaped — a
+     centered "device frame" card floating on the dark page background —
+     rather than stretching into a full-width dashboard. This keeps the
+     bottom-tab-bar navigation model coherent (it does not translate well
+     to a wide desktop dashboard) and reads as an intentional, designed
+     desktop presentation instead of a stretched mobile view.
+   ========================================================================== */
+
+/* -------------------------------------------------------------------- */
+/* .app-shell — header + scrollable content + fixed bottom nav          */
+/* -------------------------------------------------------------------- */
+
+.app-shell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--color-bg);
+}
+
+.app-shell__header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky-header);
+  padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-5) var(--space-3);
+  background: rgba(11, 11, 20, 0.7);
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  backdrop-filter: blur(var(--blur-glass));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-shell__content {
+  flex: 1 1 auto;
+  width: 100%;
+  padding: var(--space-5);
+  padding-left: calc(var(--space-5) + env(safe-area-inset-left));
+  padding-right: calc(var(--space-5) + env(safe-area-inset-right));
+  padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + var(--space-6));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* -------------------------------------------------------------------- */
+/* .screen — generic per-screen container                               */
+/* -------------------------------------------------------------------- */
+
+.screen {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.screen__title {
+  margin-bottom: var(--space-1);
+}
+
+.screen__subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* -------------------------------------------------------------------- */
+/* Dashboard — 2x2 stat grid (up to 4-across on desktop)                */
+/* -------------------------------------------------------------------- */
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+/* -------------------------------------------------------------------- */
+/* Calendar — month grid responsive sizing                              */
+/* -------------------------------------------------------------------- */
+
+.calendar-screen .calendar-grid {
+  width: 100%;
+}
+
+.calendar-screen .calendar-day {
+  font-size: var(--font-size-xs);
+}
+
+/* -------------------------------------------------------------------- */
+/* Rewards — badge grid responsive columns                              */
+/* -------------------------------------------------------------------- */
+
+.rewards-screen .badge-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* -------------------------------------------------------------------- */
+/* Profile — centered content + badge grid section                     */
+/* -------------------------------------------------------------------- */
+
+.profile-screen {
+  align-items: center;
+  text-align: center;
+}
+
+.profile-screen__avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-round);
+  overflow: hidden;
+  border: 2px solid var(--color-border-strong);
+}
+
+.profile-screen__name {
+  margin-top: var(--space-3);
+}
+
+.profile-screen__section {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* -------------------------------------------------------------------- */
+/* Progress / avatar screen — large mascot + streak info                */
+/* -------------------------------------------------------------------- */
+
+.progress-screen {
+  align-items: center;
+  text-align: center;
+}
+
+.progress-screen__avatar-wrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6) 0 var(--space-4);
+}
+
+.progress-screen__streak {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.progress-screen__streak-value {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-streak);
+}
+
+.progress-screen__streak-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.progress-screen__milestones {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-align: left;
+}
+
+/* ==========================================================================
+   Desktop (>=768px)
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  body {
+    /* Page background behind the centered "device" shell */
+    background: radial-gradient(circle at 50% 0%, #17172a 0%, var(--color-bg) 60%);
+  }
+
+  .app-shell {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100dvh;
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    box-shadow: 0 0 80px rgba(0, 0, 0, 0.5);
+  }
+
+  .desktop-shell {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-6) 0;
+    min-height: 100dvh;
+  }
+
+  .desktop-shell .app-shell {
+    min-height: calc(100dvh - var(--space-6) * 2);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .desktop-shell .bottom-nav,
+  .app-shell .bottom-nav {
+    max-width: 480px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0;
+  }
+
+  /* Wider stat grid + badge grid once there's room, still inside the
+     phone-width shell but breathing a bit more at 480px. */
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rewards-screen .badge-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Wide desktop dashboard variant: opt-in via .app-shell--wide for layouts
+   that want to use the extra horizontal space (e.g. a tablet/landscape
+   dashboard) instead of the phone-frame presentation above. */
+@media (min-width: 1024px) {
+  .app-shell--wide {
+    max-width: var(--desktop-max-width);
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+  }
+
+  .app-shell--wide .app-shell__content {
+    padding-left: var(--space-7);
+    padding-right: var(--space-7);
+  }
+
+  .app-shell--wide .dashboard-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .app-shell--wide .rewards-screen .badge-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .app-shell--wide .bottom-nav {
+    max-width: var(--desktop-max-width);
+  }
+}

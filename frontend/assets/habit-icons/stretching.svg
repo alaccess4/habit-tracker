@@ -1,0 +1,9 @@
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Stretching habit icon">
+  <!-- sun-salutation style stretching figure -->
+  <circle cx="12" cy="4.2" r="1.7" fill="currentColor" stroke="none" />
+  <path d="M12 6.5v6" />
+  <path d="M12 8.5 4.5 4" />
+  <path d="M12 8.5 19.5 4" />
+  <path d="M12 12.5 8 20" />
+  <path d="M12 12.5 16 20" />
+</svg>

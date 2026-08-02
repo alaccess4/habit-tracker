@@ -1,0 +1,9 @@
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Meditation habit icon">
+  <!-- seated lotus figure -->
+  <circle cx="12" cy="5.3" r="1.7" fill="currentColor" stroke="none" />
+  <path d="M12 7.5v4.5" />
+  <path d="M12 9.5 8 12" />
+  <path d="M12 9.5 16 12" />
+  <path d="M12 12c-2.6 1-4.5 1.9-6 1.9M12 12c2.6 1 4.5 1.9 6 1.9" />
+  <path d="M4.5 17.5c1.6-1.4 3.5-2 7.5-2s5.9.6 7.5 2" />
+</svg>
