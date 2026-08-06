@@ -169,6 +169,8 @@ function findOrCreateHabitDeadlineReminder_(habitId) {
  * плохая строка не должна останавливать весь прогон.
  */
 function checkReminders() {
+  try { rebuildViewsIfDirty_(); } catch (e) { logLine('WARN', 'rebuildViewsIfDirty_: ' + e.message); }
+
   var todayK = todayKey();
   var nowMinutes = minutesFromHHMM_(timeOfDayNow());
   var todayWeekday = isoWeekdayFromKey_(todayK);

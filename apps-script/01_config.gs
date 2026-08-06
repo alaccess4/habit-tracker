@@ -33,7 +33,9 @@ const PROP = {
   AUTH_TOKEN:          'AUTH_TOKEN',
   FCM_SERVICE_ACCOUNT: 'FCM_SERVICE_ACCOUNT',
   TIMEZONE:            'TIMEZONE',
-  LOG:                 'LOG'
+  LOG:                 'LOG',
+  VIEWS_DIRTY:         'VIEWS_DIRTY',
+  VIEWS_LAST_REBUILD:  'VIEWS_LAST_REBUILD'
 };
 
 const CFG = {
@@ -251,6 +253,32 @@ function setSetting_(key, value) {
   } else {
     updateRow(SH.SETTINGS, SIX, rowIndex, { value: value });
   }
+}
+
+/**
+ * Видимые листы (Награды/Календарь/...) — вторичное «зеркало для подглядывания»,
+ * не основной интерфейс. Полная rebuildAllViews() дорогая (5 листов, каждый заново
+ * читает данные) — раньше вызывалась синхронно на каждый чих (каждую отметку
+ * привычки), из-за чего logEntry занимал 80-360+ секунд. Теперь интерактивные
+ * ручки только помечают «нужно обновить» (дёшево — PropertiesService, не лист),
+ * а реальная пересборка происходит раз в ~30 минут в checkReminders() (06_notifications.gs)
+ * или вручную через меню «Пересобрать листы».
+ */
+function markViewsDirty_() {
+  try { props().setProperty(PROP.VIEWS_DIRTY, '1'); } catch (e) { /* не должно ронять запрос */ }
+}
+
+/** Вызывается из checkReminders(): пересобирает листы, только если помечены грязными и прошло достаточно времени. */
+function rebuildViewsIfDirty_() {
+  var p = props();
+  if (p.getProperty(PROP.VIEWS_DIRTY) !== '1') return;
+
+  var last = Number(p.getProperty(PROP.VIEWS_LAST_REBUILD) || 0);
+  if (Date.now() - last < 25 * 60 * 1000) return; // не чаще раза в ~25 минут
+
+  rebuildAllViews();
+  p.setProperty(PROP.VIEWS_DIRTY, '0');
+  p.setProperty(PROP.VIEWS_LAST_REBUILD, String(Date.now()));
 }
 
 function findSettingRowIndex_(key) {

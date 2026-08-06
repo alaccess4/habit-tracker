@@ -20,14 +20,14 @@ export async function renderProfile(container) {
 }
 
 function paint(container, profile) {
-  const name = profile.settings?.userName || 'Мой профиль';
+  const name = (profile.settings && profile.settings.userName) || 'Мой профиль';
   const pushSupported = isPushSupported();
 
   container.innerHTML = `
-    <div class="screen screen--profile">
+    <div class="screen profile-screen">
       <header class="screen-header screen-header--center">
         <div class="profile-avatar">${icon('user', { size: 34 })}</div>
-        <h1 id="profile-name">${escapeHtml(name)}</h1>
+        <h1 class="profile-screen__name">${escapeHtml(name)}</h1>
         <button class="link-button" data-action="edit-name">${icon('edit', { size: 14 })} изменить имя</button>
       </header>
 
@@ -46,7 +46,7 @@ function paint(container, profile) {
         </div>
       </section>
 
-      <section>
+      <section class="profile-screen__section">
         <div class="settings-row">
           <div>
             <strong>Push-уведомления</strong>
@@ -56,7 +56,7 @@ function paint(container, profile) {
         </div>
       </section>
 
-      <section>
+      <section class="profile-screen__section">
         <h2 class="section-title">Бейджи</h2>
         ${renderBadgeGrid(profile.achievements || [])}
       </section>

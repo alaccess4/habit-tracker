@@ -37,9 +37,8 @@ function updateAvatarStage() {
   if (current) {
     setSetting_('avatarStageIndex', current.stageIndex);
     setSetting_('avatarStreakSnapshot', bestCurrentStreak);
+    markViewsDirty_();
   }
-
-  try { rebuildAvatarSheet(); } catch (e) { logLine('WARN', 'rebuildAvatarSheet: ' + e.message); }
 
   return current;
 }

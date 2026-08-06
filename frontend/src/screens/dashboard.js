@@ -28,34 +28,31 @@ function paint(container, today, stats) {
   const percent = today.totalScheduledToday ? today.completedCount / today.totalScheduledToday : 0;
 
   container.innerHTML = `
-    <div class="screen screen--dashboard">
+    <div class="screen dashboard-screen">
       <header class="screen-header">
         <div>
           <p class="screen-header__eyebrow">Сегодня</p>
-          <h1>${greeting()}</h1>
+          <h1 class="screen__title">${greeting()}</h1>
         </div>
         <button class="icon-button" data-action="add-habit" aria-label="Добавить привычку">${icon('plus', { size: 20 })}</button>
       </header>
 
       <section class="hero-card">
-        <div class="hero-card__text">
-          <p class="hero-card__caption">Выполнено сегодня</p>
-          <p class="hero-card__big">${today.completedCount}/${today.totalScheduledToday}</p>
-          <p class="hero-card__hint">Так держать — привычки строятся день за днём</p>
+        <p class="hero-card__eyebrow">Выполнено сегодня</p>
+        <div class="hero-card__row">
+          <p class="hero-card__title">${today.completedCount}/${today.totalScheduledToday}</p>
+          ${renderProgressRing({ percent, size: 92, stroke: 8, number: `${Math.round(percent * 100)}%` })}
         </div>
-        ${renderProgressRing({
-          percent,
-          size: 96,
-          stroke: 10,
-          centerHtml: `<strong>${Math.round(percent * 100)}%</strong>`
-        })}
-        <div class="hero-card__streak">
+        <div class="hero-card__row">
           ${icon('flame', { size: 18 })}
-          <span>${today.bestCurrentStreak} ${dayWord(today.bestCurrentStreak)} подряд</span>
+          <div>
+            <span class="hero-card__stat-value">${today.bestCurrentStreak}</span>
+            <p class="hero-card__stat-label">${dayWord(today.bestCurrentStreak)} подряд</p>
+          </div>
         </div>
       </section>
 
-      <section class="habit-list" id="habit-list">
+      <section>
         <h2 class="section-title">Привычки</h2>
         <div id="habit-list-items"></div>
       </section>
@@ -79,7 +76,7 @@ function renderHabitList(container, today) {
     slot.innerHTML = `<p class="empty-state">Привычек пока нет. Нажмите «+», чтобы добавить первую — например, отжимания или чтение.</p>`;
     return;
   }
-  slot.innerHTML = today.habits.map((h) => renderHabitCard(h.habit, h)).join('');
+  slot.innerHTML = `<div class="habit-list">${today.habits.map((h) => renderHabitCard(h.habit, h)).join('')}</div>`;
   slot.querySelectorAll('.habit-card').forEach((card) => {
     const habitId = card.dataset.habitId;
     const entry = today.habits.find((h) => h.habit.id === habitId);
@@ -169,7 +166,7 @@ function openAddHabitModal(container) {
           <span>Дедлайн (необязательно)</span>
           <input type="time" name="deadlineTime" />
         </label>
-        <button class="button button--primary" type="submit">Добавить</button>
+        <button class="button button--primary button--full" type="submit">Добавить</button>
       </form>
     `,
     onMount: (root) => {

@@ -15,16 +15,15 @@ export function showToast({ title, body = '', iconName = 'sparkles', duration = 
   el.className = 'toast';
   el.innerHTML = `
     <div class="toast__icon">${icon(iconName, { size: 20 })}</div>
-    <div class="toast__text">
-      <strong>${escapeHtml(title)}</strong>
-      ${body ? `<span>${escapeHtml(body)}</span>` : ''}
+    <div>
+      <div class="toast__title">${escapeHtml(title)}</div>
+      ${body ? `<div class="toast__body">${escapeHtml(body)}</div>` : ''}
     </div>
   `;
   root.appendChild(el);
-  requestAnimationFrame(() => el.classList.add('is-visible'));
   setTimeout(() => {
-    el.classList.remove('is-visible');
-    setTimeout(() => el.remove(), 300);
+    el.classList.add('is-leaving');
+    setTimeout(() => el.remove(), 250);
   }, duration);
 }
 

@@ -23,11 +23,11 @@ function paint(container, achievements, goals, habits) {
   const unlockedCount = achievements.filter((a) => a.unlocked).length;
 
   container.innerHTML = `
-    <div class="screen screen--rewards">
+    <div class="screen rewards-screen">
       <header class="screen-header">
         <div>
           <p class="screen-header__eyebrow">Награды</p>
-          <h1>${unlockedCount} из ${achievements.length}</h1>
+          <h1 class="screen__title">${unlockedCount} из ${achievements.length}</h1>
         </div>
       </header>
 
@@ -59,12 +59,12 @@ function renderGoals(goals) {
         .map((g) => {
           const pct = g.percent != null ? Math.min(1, g.percent) : 0;
           return `
-          <div class="goal-card goal-card--${g.status || 'active'}">
+          <div class="goal-card">
             <div class="goal-card__top">
               <strong>${escapeHtml(g.title)}</strong>
               <span class="chip">${statusLabel(g.status)}</span>
             </div>
-            <div class="progress-bar"><span style="width:${Math.round(pct * 100)}%"></span></div>
+            <div class="habit-card__bar-track"><div class="habit-card__bar-fill" style="--progress:${pct}"></div></div>
             <span class="goal-card__meta">${g.doneCount || 0}/${g.targetDays} дней · до ${formatDate(g.endDate)}</span>
           </div>`;
         })
@@ -99,7 +99,7 @@ function openAddGoalModal(container, habits) {
           <span>Дедлайн</span>
           <input type="date" name="endDate" required />
         </label>
-        <button class="button button--primary" type="submit" ${habits.length ? '' : 'disabled'}>Создать</button>
+        <button class="button button--primary button--full" type="submit" ${habits.length ? '' : 'disabled'}>Создать</button>
       </form>
     `,
     onMount: (root) => {

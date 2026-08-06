@@ -22,29 +22,33 @@ function paint(container, avatar, stats) {
   const avatarSrc = `assets/avatar/${stage.svgFile || 'stage-01.png'}`;
 
   container.innerHTML = `
-    <div class="screen screen--progress">
-      <header class="screen-header">
+    <div class="screen progress-screen">
+      <header class="screen-header screen-header--center">
         <div>
           <p class="screen-header__eyebrow">Прогресс</p>
-          <h1>${escapeHtml(stage.name || 'Скелет')}</h1>
+          <h1 class="screen__title">${escapeHtml(stage.name || 'Скелет')}</h1>
         </div>
       </header>
 
-      <section class="avatar-stage">
-        <img src="${avatarSrc}" alt="${escapeHtml(stage.name || '')}" width="220" height="220" />
-        <p class="avatar-stage__caption">${escapeHtml(stage.description || '')}</p>
-        <div class="avatar-stage__streak">
-          ${icon('flame', { size: 18 })}
-          <span>${avatar.bestCurrentStreak} ${dayWord(avatar.bestCurrentStreak)} подряд</span>
+      <div class="progress-screen__avatar-wrap">
+        <div class="avatar-stage">
+          <img src="${avatarSrc}" alt="${escapeHtml(stage.name || '')}" />
         </div>
+      </div>
+      <p class="screen__subtitle">${escapeHtml(stage.description || '')}</p>
+
+      <div class="progress-screen__streak">
+        ${icon('flame', { size: 20 })}
+        <span class="progress-screen__streak-value">${avatar.bestCurrentStreak}</span>
+        <span class="progress-screen__streak-label">${dayWord(avatar.bestCurrentStreak)} подряд</span>
         ${
           avatar.nextStage
-            ? `<p class="avatar-stage__next">До «${escapeHtml(avatar.nextStage.name)}»: ещё ${avatar.daysToNextStage} ${dayWord(avatar.daysToNextStage)}</p>`
-            : `<p class="avatar-stage__next">Максимальная стадия достигнута — держите стрик, чтобы не откатиться!</p>`
+            ? `<p class="screen__subtitle">До «${escapeHtml(avatar.nextStage.name)}»: ещё ${avatar.daysToNextStage} ${dayWord(avatar.daysToNextStage)}</p>`
+            : `<p class="screen__subtitle">Максимальная стадия достигнута — держите стрик, чтобы не откатиться!</p>`
         }
-      </section>
+      </div>
 
-      <section>
+      <section class="progress-screen__milestones">
         <h2 class="section-title">Стрики по привычкам</h2>
         <div class="streak-list">
           ${

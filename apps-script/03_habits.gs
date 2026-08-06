@@ -242,7 +242,7 @@ function apiCreateHabit(payload) {
     createdAt: nowIso()
   });
 
-  rebuildAllViews();
+  markViewsDirty_();
   return getHabitById_(id);
 }
 
@@ -262,7 +262,7 @@ function apiUpdateHabit(payload) {
   }
 
   updateRow(SH.HABITS, HIX, rowIx, updates);
-  rebuildAllViews();
+  markViewsDirty_();
   return getHabitById_(payload.id);
 }
 
@@ -274,7 +274,7 @@ function apiDeleteHabit(payload) {
 
   // Мягкое удаление — никогда не удаляем строку физически, чтобы не потерять историю/стрики.
   updateRow(SH.HABITS, HIX, rowIx, { active: false });
-  rebuildAllViews();
+  markViewsDirty_();
   return getHabitById_(payload.id);
 }
 
@@ -328,7 +328,7 @@ function apiLogEntry(payload) {
   var streak = computeStreak(payload.habitId);
   var achievementsResult = evaluateAchievements(payload.habitId);
   updateAvatarStage();
-  rebuildAllViews();
+  markViewsDirty_();
 
   return {
     entry: {

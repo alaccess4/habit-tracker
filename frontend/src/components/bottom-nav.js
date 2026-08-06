@@ -20,7 +20,7 @@ export function renderBottomNav(activeRoute) {
           aria-current="${item.route === activeRoute ? 'page' : 'false'}"
         >
           ${icon(item.icon, { size: 22 })}
-          <span>${item.label}</span>
+          <span class="bottom-nav__label">${item.label}</span>
         </button>`
       ).join('')}
     </nav>

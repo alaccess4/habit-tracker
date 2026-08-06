@@ -27,19 +27,20 @@ export async function renderCalendar(container) {
 
 function paint(container, data) {
   const [y, m] = currentMonth.split('-').map(Number);
+  const todayStr = todayKeyLocal();
   const firstOfMonth = new Date(y, m - 1, 1);
   const leadingBlank = (firstOfMonth.getDay() + 6) % 7; // Monday-first offset
 
   const days = data.days || [];
-  const dayCells = days.map((d) => renderDayCell(d)).join('');
-  const blanks = Array.from({ length: leadingBlank }).map(() => `<div class="calendar-cell is-empty"></div>`).join('');
+  const dayCells = days.map((d) => renderDayCell(d, d.date === todayStr)).join('');
+  const blanks = Array.from({ length: leadingBlank }).map(() => `<div class="calendar-day is-empty"></div>`).join('');
 
   container.innerHTML = `
-    <div class="screen screen--calendar">
+    <div class="screen calendar-screen">
       <header class="screen-header">
         <div>
           <p class="screen-header__eyebrow">История</p>
-          <h1>${MONTH_NAMES[m - 1]} ${y}</h1>
+          <h1 class="screen__title">${MONTH_NAMES[m - 1]} ${y}</h1>
         </div>
       </header>
 
@@ -55,8 +56,8 @@ function paint(container, data) {
         <span><i class="legend-dot legend-dot--missed"></i>Пропущено</span>
       </div>
 
-      <div class="calendar-grid calendar-grid--head">
-        ${WEEKDAYS.map((w) => `<div class="calendar-weekday">${w}</div>`).join('')}
+      <div class="calendar-grid">
+        ${WEEKDAYS.map((w) => `<div class="calendar-grid__weekday">${w}</div>`).join('')}
       </div>
       <div class="calendar-grid">
         ${blanks}
@@ -70,7 +71,7 @@ function paint(container, data) {
   container.querySelector('[data-nav="prev"]').addEventListener('click', () => shiftMonth(container, -1));
   container.querySelector('[data-nav="next"]').addEventListener('click', () => shiftMonth(container, 1));
 
-  container.querySelectorAll('.calendar-cell[data-date]').forEach((cell) => {
+  container.querySelectorAll('.calendar-day[data-date]').forEach((cell) => {
     cell.addEventListener('click', () => {
       const day = days.find((d) => d.date === cell.dataset.date);
       renderDayDetail(container, day);
@@ -78,13 +79,13 @@ function paint(container, data) {
   });
 }
 
-function renderDayCell(day) {
+function renderDayCell(day, isToday) {
   const dayNum = Number(day.date.split('-')[2]);
   const statusClass = `is-${day.status}`;
   return `
-    <button class="calendar-cell ${statusClass}" data-date="${day.date}">
-      <span class="calendar-cell__num">${dayNum}</span>
-      ${day.status === 'full' ? icon('check', { size: 12, className: 'calendar-cell__mark' }) : ''}
+    <button class="calendar-day ${statusClass} ${isToday ? 'is-today' : ''}" data-date="${day.date}">
+      <span>${dayNum}</span>
+      ${day.status === 'full' ? `<span class="calendar-day__glyph">${icon('check', { size: 10 })}</span>` : ''}
     </button>
   `;
 }
@@ -121,6 +122,11 @@ function shiftMonth(container, delta) {
 
 function monthKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function todayKeyLocal() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 function formatDate(dateStr) {

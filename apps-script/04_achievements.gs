@@ -159,10 +159,7 @@ function evaluateAchievements(habitId) {
     }
   });
 
-  if (newlyUnlocked.length > 0) {
-    try { rebuildRewardsSheet(); } catch (e) { logLine('WARN', 'rebuildRewardsSheet: ' + e.message); }
-    try { rebuildProfileSheet(); } catch (e) { logLine('WARN', 'rebuildProfileSheet: ' + e.message); }
-  }
+  if (newlyUnlocked.length > 0) markViewsDirty_();
 
   return { unlocked: newlyUnlocked };
 }
