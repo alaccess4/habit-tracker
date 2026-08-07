@@ -114,12 +114,19 @@ SCHEMA[SH.SETTINGS]      = { col: SETTINGS_COL,     ix: SIX };
 
 // ══ Базовые хелперы ══════════════════════════════════════════════════════════
 
-function ss() { return SpreadsheetApp.getActiveSpreadsheet(); }
+var __ssCache_ = null;
+function ss() {
+  if (!__ssCache_) __ssCache_ = SpreadsheetApp.getActiveSpreadsheet();
+  return __ssCache_;
+}
 
+var __sheetCache_ = {};
 function sheet(name, createIfMissing) {
-  const s = ss().getSheetByName(name);
-  if (s || !createIfMissing) return s;
-  return ss().insertSheet(name);
+  if (__sheetCache_.hasOwnProperty(name)) return __sheetCache_[name];
+  var s = ss().getSheetByName(name);
+  if (!s && createIfMissing) s = ss().insertSheet(name);
+  if (s) __sheetCache_[name] = s;
+  return s;
 }
 
 function props() { return PropertiesService.getScriptProperties(); }
@@ -186,16 +193,39 @@ function getAuthToken() {
 // ══ Генерические хелперы чтения/записи скрытых листов ═══════════════════════════
 
 /**
+ * Кэш readRows() на время ОДНОГО выполнения doPost/doGet (не между запросами —
+ * переменная верхнего уровня в Apps Script не гарантированно переживает разные
+ * вызовы, а вот в рамках одного вызова живёт стабильно). Без этого кэша один
+ * apiLogEntry() делал 15+ отдельных чтений листа _entries (computeStreak,
+ * evaluateAchievements, updateAvatarStage — каждый по-своему), и каждое такое
+ * чтение — это отдельный сетевой round-trip к Sheets API (секунды), из-за чего
+ * простая отметка привычки занимала до 80-360 секунд.
+ */
+var __readRowsCache_ = {};
+
+/**
  * Возвращает все строки данных (без заголовка) листа sheetName как массив массивов.
  * Пустой лист (или отсутствующий) -> [].
  */
 function readRows(sheetName) {
+  if (__readRowsCache_.hasOwnProperty(sheetName)) return __readRowsCache_[sheetName];
+
   const sh = sheet(sheetName, false);
-  if (!sh) return [];
-  const lastRow = sh.getLastRow();
-  const lastCol = sh.getLastColumn();
-  if (lastRow < 2 || lastCol < 1) return [];
-  return sh.getRange(2, 1, lastRow - 1, lastCol).getValues();
+  var result;
+  if (!sh) {
+    result = [];
+  } else {
+    const lastRow = sh.getLastRow();
+    const lastCol = sh.getLastColumn();
+    result = (lastRow < 2 || lastCol < 1) ? [] : sh.getRange(2, 1, lastRow - 1, lastCol).getValues();
+  }
+  __readRowsCache_[sheetName] = result;
+  return result;
+}
+
+/** Сбрасывает кэш readRows() для листа — вызывается после любой записи в него. */
+function invalidateReadRowsCache_(sheetName) {
+  delete __readRowsCache_[sheetName];
 }
 
 /**
@@ -211,6 +241,7 @@ function writeRow(sheetName, colIx, valuesObj) {
     if (colIx.hasOwnProperty(k)) row[colIx[k]] = valuesObj[k];
   });
   sh.getRange(sh.getLastRow() + 1, 1, 1, colCount).setValues([row]);
+  invalidateReadRowsCache_(sheetName);
   return row;
 }
 
@@ -225,6 +256,7 @@ function updateRow(sheetName, colIx, rowIndex1Based, valuesObj) {
       sh.getRange(rowIndex1Based, colIx[k] + 1).setValue(valuesObj[k]);
     }
   });
+  invalidateReadRowsCache_(sheetName);
 }
 
 /**
